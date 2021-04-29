@@ -1,0 +1,9 @@
+.container {
+    width: 100%;
+    background-color: whitesmoke;
+    /* max-width: 320px; */
+}
+
+.content {
+    margin-top: 45px;
+}
