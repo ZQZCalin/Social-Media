@@ -4,22 +4,35 @@ import css from 'style/Navbar.module.css'
 
 export default Navbar;
 
-function Navbar() {
-    let navItems = [
-        "home", "explore", "newpost", "activity", "profile",
+function Navbar(props) {
+    // nav items and url
+    const navList = [
+        "Home", "Explore", "NewPost", "Activity", "Profile",
     ];
-    let navItemsURL = navItems.map(item => `/assets/${item}.svg`);
+    const navURL = navList.map(item => `/assets/${item.toLowerCase()}.svg`);
+
+    // lifting up state (clicked page) to App
+    function handleNavChange(page) {
+        if (props.onNavChange) return props.onNavChange(page);
+    }
+
+    // navigation buttons
+    function NavButton(props) {
+        return (
+            <div className={css.navItem}>
+                <button onClick={() => handleNavChange(props.name)}>
+                    <img src={publicURL(props.url)} alt={props.name}/>
+                </button>
+            </div>
+        );
+    }
+
+    // render navbar
     return (
         <nav className={css.navbar}>
-            {
-                navItemsURL.map((url,i) => (
-                    <div className={publicURL(css.navItem)} key={url}>
-                        <button>
-                            <img src={url} alt={navItems[i]}/>
-                        </button>
-                    </div>
-                ))
-            }
+            {navURL.map((url, i) => 
+                <NavButton url={url} name={navList[i]} key={url}/>
+            )}
         </nav>
     );
 }

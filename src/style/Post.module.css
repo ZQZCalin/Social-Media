@@ -1,0 +1,76 @@
+:root {
+    --user-photo-size: 32px;
+    --div-padding-sides: 18px;
+}
+
+.post {
+    width: 100%;
+    background-color: #fff;
+}
+
+.post img {
+    display: block;
+}
+
+.user, .like, .comments, .timespan {
+    padding: 0 18px;
+}
+
+/* Header */
+.user {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    height: 64px;
+}
+
+.userName {
+    padding: 0 0.75em;
+}
+
+.userPhoto {
+    width: var(--user-photo-size);
+    height: var(--user-photo-size);
+    border-radius: calc(var(--user-photo-size)/2);
+    object-fit: cover;
+}
+
+/* Photo */
+.postPhoto {
+    display: block;
+    width: 100%;
+    background-size: cover;
+}
+
+/* Like */
+.like {
+    padding-top: 8px;
+}
+
+.like button:first-child {
+    margin-right: 8px;
+}
+
+.like > strong {
+    display: block;
+    margin: 6px 0;
+}
+
+/* Comments */
+.comments {
+    background: none;
+}
+
+.comments > ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 12px 0;
+}
+
+/* Timespan */
+.timespan {
+    color: gray;
+    text-transform: uppercase;
+    font-size: 0.75em;
+}

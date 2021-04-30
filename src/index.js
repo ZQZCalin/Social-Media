@@ -3,6 +3,33 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import { renderIntoDocument } from 'react-dom/test-utils';
+
+
+// test functions
+class Test extends React.Component {
+  constructor(props) {
+    super (props);
+    this.value = "Hello World!";
+    this.call = this.call.bind(this);
+  }
+
+  call() {
+    console.log(this.value);
+  }
+
+  render() {
+    return (
+      <Comp func={this.call}/>
+    );
+  }
+}
+
+function Comp(prop) {
+  prop.func();
+  return null;
+}
+
 
 ReactDOM.render(
   <React.StrictMode>

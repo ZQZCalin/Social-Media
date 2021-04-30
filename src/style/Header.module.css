@@ -16,3 +16,7 @@
 .headerItem{
     padding: 0;
 }
+
+.header img, .header button {
+    display: block;
+}

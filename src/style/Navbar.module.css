@@ -16,3 +16,7 @@
 /* .navItem {
     
 } */
+
+.navbar img, .navbar button {
+    display: block;
+}

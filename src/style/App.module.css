@@ -5,5 +5,11 @@
 }
 
 .content {
-    margin-top: 45px;
+    width: 100%;
+
+    position: fixed;
+    top: 44px;
+    bottom: 44px;
+
+    overflow: auto;
 }

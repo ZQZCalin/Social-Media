@@ -29,6 +29,6 @@ button:focus{
 }
 
 /* image set to block to make containing div the same size */
-img, button {
+/* img, button {
     display: block;
-}
+} */
