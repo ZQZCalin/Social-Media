@@ -5,12 +5,13 @@ import React from 'react';
 
 export default Home;
 
-var post = {
-	user:{
+/* Data Structure
+Post.props = {
+    user: {
 		id:"judy",
 		photo:"/assets/user1.png",
 	},
-	post:{
+	post: {
 		id:"post-1",
         userId:"judy",
         photo:"/assets/post1.png",
@@ -21,26 +22,53 @@ var post = {
 		self: true,
 		count:1
 	},
-	comments:[
+	comments: [
 		{
-      userId:"nick",
-      text:"Welcome to Zootopia!"
-    },
-    {
-        userId:"judy",
-        text:"Thanks!😁Looking forward to meeting you!"
-    }
+            userId:"nick",
+            text:"Welcome to Zootopia!"
+        },
+        {
+            userId:"judy",
+            text:"Thanks!😁Looking forward to meeting you!"
+        }
 	]
-}
+} 
+*/
 
-function Home() {
+function Home(props) {
+    const store = props.store;
+
     return (
-        <Post
-            user={post.user}
-            likes={post.likes}
-            post={post.post}
-            comments={post.comments}
-        />
+    <div>{
+        store.posts.sort((a,b) => new Date(b.datetime) - new Date(a.datetime))
+        .map(post => 
+            <Post key = {post.id}
+                user = {findUser(store.users, post)}
+                likes = {findLikes(store.likes, post, store.currentUserId)}
+                post = {post}
+                comments = {findComments(store.comments, post)}
+                onLike = {props.onLike}
+                onUnlike = {props.onUnlike}
+            />
+        )
+    }</div>
     );
 }
 
+function findUser(users, post) {
+    return users.find(user => user.id === post.userId);
+}
+
+function findLikes(likes, post, currentUserId) {
+    const likeThisPost = likes.filter(like => like.postId === post.id);
+    return {
+        self: likeThisPost.some(like => like.userId === currentUserId),
+        count: likeThisPost.length,
+    };
+}
+
+// sorted by time
+function findComments(comments, post) {
+    return comments.filter(comment => comment.postId === post.id)
+        .sort((a,b) => new Date(a.datetime) - new Date(b.datetime));
+}

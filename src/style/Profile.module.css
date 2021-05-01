@@ -1,0 +1,64 @@
+:root {
+    --photo-radius: 40px;
+    --photo-width: calc(var(--photo-radius)*2);
+}
+
+.container {
+    background-color: #fff;
+}
+
+.user {
+    border-bottom: 1px solid #dbdbdb;
+    padding: 0 18px;
+}
+
+.userTitle {
+    display: flex;
+    align-items: start;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.userBio {
+    line-height: 120%;
+    padding-bottom: 1em;
+}
+
+.userPhoto {
+    width: var(--photo-width);
+    height: var(--photo-width);
+    border-radius: var(--photo-radius);
+    margin-right: 1em;
+}
+
+.userName {
+    font-size: 1.25em;
+}
+
+.stats {
+    display: flex;
+    align-items: center;
+
+    padding: 0.75em 0;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.statItem {
+    flex-basis: 33.3%;
+    text-align: center;
+}
+
+.statItem > span:first-child {
+    font-weight: 600;
+}
+
+.statItem > span:last-child {
+    color: gray;
+    font-size: 0.75em;
+}
+
+.thumbnail {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+}
