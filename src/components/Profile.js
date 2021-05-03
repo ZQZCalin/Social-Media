@@ -68,7 +68,7 @@ function Profile(props) {
         <div className={css.stats}>
             {
                 stats.map(stat => (
-                    <div className={css.statItem}>
+                    <div className={css.statItem} key={stat.name}>
                         <span>{stat.value}</span> <br/>
                         <span>{stat.name}</span>
                     </div>
@@ -79,7 +79,7 @@ function Profile(props) {
         <div className={css.thumbnail}>
             {
                 posts.map(post => (
-                    <PostThumbnail src={post.photo} alt={post.id}/>
+                    <PostThumbnail src={post.photo} alt={post.id} key={post.id}/>
                 ))
             }
         </div>

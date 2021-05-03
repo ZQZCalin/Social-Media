@@ -49,6 +49,7 @@ function Home(props) {
                 comments = {findComments(store.comments, post)}
                 onLike = {props.onLike}
                 onUnlike = {props.onUnlike}
+                onComment = {props.onComment}
             />
         )
     }</div>

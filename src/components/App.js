@@ -11,99 +11,101 @@ import NewPost from './NewPost';
 import Activity from './Activity';
 import Profile from './Profile';
 // others
-import React from 'react';
+import React, {useState} from 'react';
+import uniqueId from 'utils/uniqueId';
 // data
 import initStore from 'utils/initialStore';
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            page: "home",
-            store: initStore,
-        };
-        this.setPage = this.setPage.bind(this);
-        this.addLike = this.addLike.bind(this);
-        this.removeLike = this.removeLike.bind(this);
-    }
 
-    setPage(targetPage) {
-        this.setState({
-            page: targetPage.toLowerCase()
-        });
-        // Example: asynchronous update
-        if (false) console.log(this.state.page); // state is not updated by now
-    }
+function App(props) {
+    const [page, setPage] = useState("home");
+    const [store, setStore] = useState(initStore);
 
-    addLike(postId) {
-        this.setState(state => {
-            const newLike = {
-                userId: state.store.currentUserId,
-                postId: postId,
-                datetime: new Date().toISOString(),
-            };
-            return (
-            {
-                store: {
-                    // ... syntax: spread out properties
-                    ...state.store,
-                    likes: state.store.likes.concat(newLike) 
-                    // push() changes the array directly, so not valid here
-                    // instead, we should use concat()
-                }
-            });
-        });
-    }
+    // debugger
+    if (false) console.log(page); // page
+    if (false) console.log(store); // store
 
-    removeLike(postId) {
-        this.setState(state => {
-            const unlikedList = state.store.likes
-                .filter(like => !(like.userId===state.store.currentUserId && like.postId===postId));
-            return ({
-                store: {
-                    ...state.store,
-                    likes: unlikedList,
-                }
-            });
-        });
-    }
-
-    renderPage(page) {
-        switch(page) {
+    // keep these functions in App:
+    // stay in scope of states
+    function renderMain(page) {
+        switch(page.toLowerCase()) {
             case "home": 
-                return this.renderHome();
+                return <Home store={store}
+                onLike={addLike} onUnlike={removeLike}
+                onComment={addComment}/>;
             case "explore": 
                 return <Explore />;
             case "newpost": 
-                return <NewPost />;
+                return <NewPost onSubmit={addPost} onPageChange={setPage}/>;
             case "activity": 
                 return <Activity />;
             case "profile": 
-                return <Profile store={this.state.store}/>;
+                return <Profile store={store}/>;
             default: 
-                return this.renderHome();
+                return null;
         }
     }
 
-    renderHome() {
-        return <Home store={this.state.store}
-            onLike={this.addLike} onUnlike={this.removeLike}/>;
+    function addLike(postId) {
+        const newLike = {
+            userId: store.currentUserId,
+            postId: postId,
+            datetime: new Date().toISOString(),
+        };
+        
+        setStore({
+            ...store,
+            likes: store.likes.concat(newLike) 
+        });
+    }
+    
+    function removeLike(postId) {
+        const unlikedList = store.likes
+            .filter(like => !(like.userId===store.currentUserId && like.postId===postId));
+        setStore({
+            ...store,
+            likes: unlikedList,
+        });
     }
 
-    render() {
-        // Example: render will wait until state has been changed
-        if (false) console.log(this.state.page); // state is updated now
-        if (false) console.log(this.state.store); // debugger
-        return(
-            <div className={css.container}>
-                <Header/>
-                <div className={css.content}>
-                    {this.renderPage(this.state.page)}
-                </div>
-                <Navbar onNavChange={this.setPage}/>
-            </div>
-        );
+    function addComment(postId, text) {
+        const newComment = {
+            userId: store.currentUserId,
+            postId: postId,
+            text: text,
+            datetime: new Date().toISOString(),
+        };
+        setStore({
+            ...store,
+            comments: store.comments.concat(newComment),
+        });
     }
+
+    function addPost(photo, description) {
+        const newPost = {
+            id: uniqueId("post-"),
+            userId: store.currentUserId,
+            photo: photo,
+            desc: description,
+            datetime: new Date().toISOString(),
+        };
+        setStore({
+            ...store,
+            posts: store.posts.concat(newPost),
+        });
+    }
+
+    return(
+        <div className={css.container}>
+            <Header/>
+            <div className={css.content}>
+                {renderMain(page)}
+            </div>
+            <Navbar onNavChange={setPage}/>
+        </div>
+    );
+
 }
+
 
 export default App;

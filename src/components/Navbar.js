@@ -13,7 +13,7 @@ function Navbar(props) {
 
     // lifting up state (clicked page) to App
     function handleNavChange(page) {
-        if (props.onNavChange) return props.onNavChange(page);
+        if (props.onNavChange) return props.onNavChange(page.toLowerCase());
     }
 
     // navigation buttons
