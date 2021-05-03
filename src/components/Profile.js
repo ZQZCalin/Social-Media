@@ -1,8 +1,9 @@
 import css from 'style/Profile.module.css';
-import React from 'react';
+import React, {useState} from 'react';
 import PostThumbnail from './PostThumbnail';
 import publicURL from 'utils/publicURL';
 import FancyFont from 'utils/FancyFont';
+import {Link, useParams} from 'react-router-dom';
 
 export default Profile;
 
@@ -41,14 +42,49 @@ Profile.state = {
 */
 
 function Profile(props) {
+    let {userId} = useParams();
+    userId = userId ? userId : props.store.currentUserId;
     const user = findUser(props.store);
     const posts = findPosts(props.store);
     const follows = findFollows(props.store);
+    const [toggleFollow, setToggleFollow] = useState(
+        props.store.followers
+        .some(follow => follow.userId===userId && follow.followerId===props.store.currentUserId)
+    ); // false if currently unfollow
+
+    function findUser(store) {
+        return store.users.find(user => user.id === userId);
+    }
+    
+    function findPosts(store) {
+        return store.posts.filter(post => post.userId === userId);
+    }
+    
+    function findFollows(store) {
+        return ({
+            followers: store.followers
+                .filter(follow => follow.userId === userId)
+                .map(follow => follow.followerId),
+            followings: store.followers
+                .filter(follow => follow.followerId === userId)
+                .map(follow => follow.userId),
+        });
+    }
+
+    function handleFollow() {
+        if (!toggleFollow) {
+            props.onFollow(userId) // follow
+        } else {
+            props.onUnfollow(userId) // unfollow
+        }
+        // change state
+        setToggleFollow(!toggleFollow);
+    }
 
     const stats = [
-        {name: "posts", value: posts.length},
-        {name: "followers", value: follows.followers.length},
-        {name: "followings", value: follows.followings.length},
+        {name: "post", value: posts.length},
+        {name: "follower", value: follows.followers.length},
+        {name: "following", value: follows.followings.length},
     ];
 
     if (false) console.log(user, posts, follows);
@@ -57,7 +93,16 @@ function Profile(props) {
         <div className={css.user}>
             <div className={css.userTitle}>
                 <img className={css.userPhoto} src={publicURL(user.photo)} alt="photo"/>
-                <FancyFont className={css.userName} style="lightBold">{user.id}</FancyFont>
+                <div>
+                    <FancyFont className={css.userName} style="lightBold">{user.id}</FancyFont>
+                    {useParams().userId &&
+                    <button onClick={handleFollow} 
+                        className={!toggleFollow ? css.followBtn : css.unfollowBtn}
+                    >
+                        {!toggleFollow ? 'Follow' : 'Unfollow'}
+                    </button>
+                    }
+                </div>
             </div>
             <div className={css.userBio}>
                 <FancyFont style="semiBold">{user.name}</FancyFont> <br/>
@@ -70,7 +115,7 @@ function Profile(props) {
                 stats.map(stat => (
                     <div className={css.statItem} key={stat.name}>
                         <span>{stat.value}</span> <br/>
-                        <span>{stat.name}</span>
+                        <span>{stat.name+((stat.value>1)?"s":"")}</span>
                     </div>
                 ))
             }
@@ -79,28 +124,11 @@ function Profile(props) {
         <div className={css.thumbnail}>
             {
                 posts.map(post => (
-                    <PostThumbnail src={post.photo} alt={post.id} key={post.id}/>
+                <Link to={'/'+post.id} key={post.id}>
+                    <PostThumbnail src={post.photo} alt={post.id}/>
+                </Link>
                 ))
             }
         </div>
     </div>);
-}
-
-function findUser(store) {
-    return store.users.find(user => user.id === store.currentUserId);
-}
-
-function findPosts(store) {
-    return store.posts.filter(post => post.userId === store.currentUserId);
-}
-
-function findFollows(store) {
-    return ({
-        followers: store.followers
-            .filter(follow => follow.userId === store.currentUserId)
-            .map(follow => follow.followerId),
-        followings: store.followers
-            .filter(follow => follow.followerId === store.currentUserId)
-            .map(follow => follow.userId),
-    });
 }

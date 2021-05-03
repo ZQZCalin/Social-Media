@@ -4,6 +4,7 @@ import publicURL from 'utils/publicURL';
 import timespan from 'utils/timespan';
 import PostThumbnail from './PostThumbnail';
 import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
 
 export default Post;
 
@@ -90,7 +91,9 @@ function Post(props) {
         <div className={css.post}>
             <div className={css.user}>
                 <img className={css.userPhoto} src={publicURL(props.user.photo)} alt={props.user.id}/>
-                <strong className={css.userName}>{props.user.id}</strong>
+                <Link to={'/profile/'+props.user.id} className={css.userName}>
+                    <strong>{props.user.id}</strong>
+                </Link>
             </div>
                 
             {/* <img className={css.postPhoto} src={publicURL(props.post.photo)} alt="Photo"/> */}
@@ -114,11 +117,17 @@ function Post(props) {
             <div className={css.comments}>
                 <ul>
                     {props.post.desc!='' &&
-                        <li><strong>{props.post.userId}</strong> {props.post.desc}</li>
+                        <li>
+                            <Link to={'/profile/'+props.post.userId}><strong>{props.post.userId}</strong> </Link>
+                            {props.post.desc}
+                        </li>
                     }
                     {props.comments.map((comment, i) => (
                         <li key={i}>
-                            <strong>{comment.userId}</strong> {comment.text}
+                            <Link to={'/profile/'+comment.userId}>
+                                <strong>{comment.userId}</strong> 
+                            </Link>
+                            {comment.text}
                         </li>
                     ))}
                 </ul>

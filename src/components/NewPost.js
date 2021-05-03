@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import css from 'style/NewPost.module.css';
 import uniqueId from 'utils/uniqueId';
 import FileLoader from './FileLoader';
+import {useHistory} from 'react-router-dom';
 
 export default NewPost;
 
@@ -10,13 +11,16 @@ function NewPost(props) {
     const [desc, setDesc] = useState('');
     const [photo, setPhoto] = useState(null);
     const [error, setError] = useState(''); // to show an error message
+    const history = useHistory();
   
     function handleFileDragEnter(e){
         setDragging(true);
     }
+
     function handleFileDragLeave(e){
         setDragging(false);
     }
+
     function handleFileDrop(e){
         if (e.dataTransfer.types.includes('Files')===false){
             // return;
@@ -35,10 +39,12 @@ function NewPost(props) {
         }
         setDragging(false);
     }
+
     function handleDescChange(e){
         // TODO: call setDesc
         setDesc(e.target.value);
     }
+
     function handleSubmit(e){
         // TODO:
         // 1. Prevent default behavior
@@ -51,15 +57,19 @@ function NewPost(props) {
         // 3. Call the storage update function passed from the parent
         props.onSubmit(photo, desc);
         // 4. Clear error msg
-        // setError('');
-        props.onPageChange('home');
+        setError('');
+        history.push('/');
     }
+
     function handleCancel(){
         // TODO: Notify the parent about the cancellation
         setPhoto(null);
         setDesc('');
         setError('');
+        // routing
+        history.goBack();
     }
+
     return (
         <div>
             <div className={css.photo}>

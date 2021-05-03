@@ -13,6 +13,7 @@ import Profile from './Profile';
 // others
 import React, {useState} from 'react';
 import uniqueId from 'utils/uniqueId';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 // data
 import initStore from 'utils/initialStore';
 
@@ -95,16 +96,67 @@ function App(props) {
         });
     }
 
+    function addFollow(followId) {
+        const newFollow = {
+            userId: followId,
+            followerId: store.currentUserId,
+        }
+        setStore({
+            ...store,
+            followers: store.followers.concat(newFollow),
+        });
+    }
+
+    function removeFollow(followId) {
+        const removedFollowList = store.followers
+            .filter(follow => 
+                !(follow.userId===followId && follow.followerId===store.currentUserId)
+            );
+        setStore({
+            ...store,
+            followers: removedFollowList,
+        });
+    }
+
     return(
+    <Router basename={process.env.PUBLIC_URL}>
         <div className={css.container}>
             <Header/>
             <div className={css.content}>
-                {renderMain(page)}
+                <Switch>
+                    <Route path='/explore'>
+                        <Explore />
+                    </Route>
+
+                    <Route path='/new-post'>
+                        <NewPost onSubmit={addPost}/>
+                    </Route>
+
+                    <Route path='/activity'>
+                        <Activity />
+                    </Route>
+
+                    <Route path='/profile/:userId?'>
+                        <Profile 
+                            store={store}
+                            onFollow={addFollow}
+                            onUnfollow={removeFollow}
+                        />
+                    </Route>
+
+                    <Route path='/:postId?'>
+                        <Home store={store}
+                            onLike={addLike} 
+                            onUnlike={removeLike}
+                            onComment={addComment}
+                        />
+                    </Route>
+                </Switch>
             </div>
             <Navbar onNavChange={setPage}/>
         </div>
+    </Router>
     );
-
 }
 
 

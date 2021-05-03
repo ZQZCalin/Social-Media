@@ -26,6 +26,15 @@ button:focus{
     outline: none;
 }
 
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+a, button {
+    cursor: pointer;
+}
+
 /* image set to block to make containing div the same size */
 /* img, button {
     display: block;
