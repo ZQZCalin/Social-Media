@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, { useContext, useState } from 'react';
 import css from 'style/NewPost.module.css';
 import uniqueId from 'utils/uniqueId';
 import FileLoader from './FileLoader';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { StoreContext } from 'contexts/StoreContext';
 
 export default NewPost;
 
@@ -12,6 +13,7 @@ function NewPost(props) {
     const [photo, setPhoto] = useState(null);
     const [error, setError] = useState(''); // to show an error message
     const history = useHistory();
+    const {addPost} = useContext(StoreContext);
   
     function handleFileDragEnter(e){
         setDragging(true);
@@ -55,7 +57,7 @@ function NewPost(props) {
             return;
         }
         // 3. Call the storage update function passed from the parent
-        props.onSubmit(photo, desc);
+        addPost(photo, desc);
         // 4. Clear error msg
         setError('');
         history.push('/');

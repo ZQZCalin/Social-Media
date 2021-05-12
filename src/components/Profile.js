@@ -1,9 +1,10 @@
 import css from 'style/Profile.module.css';
-import React, {useState} from 'react';
+import React, { useContext, useState } from 'react';
 import PostThumbnail from './PostThumbnail';
 import publicURL from 'utils/publicURL';
 import FancyFont from 'utils/FancyFont';
-import {Link, useParams} from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { StoreContext } from 'contexts/StoreContext';
 
 export default Profile;
 
@@ -42,25 +43,26 @@ Profile.state = {
 */
 
 function Profile(props) {
+
+    const {store, addFollow, removeFollow} = useContext(StoreContext);
+
     let {userId} = useParams();
-    userId = userId ? userId : props.store.currentUserId;
-    const user = findUser(props.store);
-    const posts = findPosts(props.store);
-    const follows = findFollows(props.store);
+    userId = userId ? userId : store.currentUserId;
+    const user = findUser();
+    const posts = findPosts();
+    const follows = findFollows();
     const [toggleFollow, setToggleFollow] = useState(
-        props.store.followers
-        .some(follow => follow.userId===userId && follow.followerId===props.store.currentUserId)
+        store.followers
+        .some(follow => follow.userId===userId && follow.followerId===store.currentUserId)
     ); // false if currently unfollow
 
-    function findUser(store) {
+    function findUser() {
         return store.users.find(user => user.id === userId);
     }
-    
-    function findPosts(store) {
+    function findPosts() {
         return store.posts.filter(post => post.userId === userId);
     }
-    
-    function findFollows(store) {
+    function findFollows() {
         return ({
             followers: store.followers
                 .filter(follow => follow.userId === userId)
@@ -73,9 +75,9 @@ function Profile(props) {
 
     function handleFollow() {
         if (!toggleFollow) {
-            props.onFollow(userId) // follow
+            addFollow(userId) // follow
         } else {
-            props.onUnfollow(userId) // unfollow
+            removeFollow(userId) // unfollow
         }
         // change state
         setToggleFollow(!toggleFollow);

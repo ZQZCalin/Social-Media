@@ -3,8 +3,9 @@ import css from 'style/Post.module.css';
 import publicURL from 'utils/publicURL';
 import timespan from 'utils/timespan';
 import PostThumbnail from './PostThumbnail';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Link} from 'react-router-dom';
+import { StoreContext } from 'contexts/StoreContext';
 
 export default Post;
 
@@ -42,14 +43,15 @@ function Post(props) {
     // state hook
     const [toggleComment, setToggleComment] = useState(false);
     const [comment, setComment] = useState("");
+    const {addLike, removeLike, addComment} = useContext(StoreContext);
     
-    function handleLikeChange(self, postId) {
-        if (!self) {
+    function handleLike() {
+        if (!props.likes.self) {
             // if currently unlike => like
-            return props.onLike(postId);
+            addLike(props.post.id);
         } else {
             // if ucrrently liked => unlike
-            return props.onUnlike(postId);
+            removeLike(props.post.id);
         }
     }
 
@@ -78,7 +80,7 @@ function Post(props) {
 
         } else {
             // set state
-            props.onComment(props.post.id, comment);
+            addComment(props.post.id, comment);
             // reset comment
             setToggleComment(false);
             setComment("");
@@ -104,8 +106,11 @@ function Post(props) {
 
             <div className={css.like}>
                 <button>
-                    <img src={(props.likes.self) ? publicURL("/assets/unlike.svg"):publicURL("/assets/like.svg")}
-                        onClick={()=>handleLikeChange(props.likes.self, props.post.id)}/>
+                    <img src={(props.likes.self) ? 
+                        publicURL("/assets/unlike.svg")
+                        :publicURL("/assets/like.svg")}
+                        onClick={handleLike}
+                    />
                 </button>
                 <button>
                     <img src={publicURL("/assets/comment.svg")}
@@ -125,7 +130,7 @@ function Post(props) {
                     {props.comments.map((comment, i) => (
                         <li key={i}>
                             <Link to={'/profile/'+comment.userId}>
-                                <strong>{comment.userId}</strong> 
+                                <strong>{comment.userId} </strong> 
                             </Link>
                             {comment.text}
                         </li>

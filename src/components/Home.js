@@ -1,8 +1,9 @@
 import css from 'style/Home.module.css';
 import publicURL from 'utils/publicURL';
 import Post from './Post'
-import React from 'react';
+import React, { useContext } from 'react';
 import {useParams} from 'react-router-dom';
+import { StoreContext } from 'contexts/StoreContext';
 
 export default Home;
 
@@ -37,26 +38,25 @@ Post.props = {
 */
 
 function Home(props) {
-    const store = props.store;
+    const {store} = useContext(StoreContext);
     const {postId} = useParams();
 
     return (
-    <div>{
-        store.posts
-        .filter(post => !postId || post.id===postId)
-        .sort((a,b) => new Date(b.datetime) - new Date(a.datetime))
-        .map(post => 
-            <Post key = {post.id}
-                user = {findUser(store.users, post)}
-                likes = {findLikes(store.likes, post, store.currentUserId)}
-                post = {post}
-                comments = {findComments(store.comments, post)}
-                onLike = {props.onLike}
-                onUnlike = {props.onUnlike}
-                onComment = {props.onComment}
-            />
-        )
-    }</div>
+        <div>
+            {
+                store.posts
+                .filter(post => !postId || post.id===postId) // filter post
+                .sort((a,b) => new Date(b.datetime) - new Date(a.datetime)) // sort by time
+                .map(post => 
+                    <Post key = {post.id}
+                        user = {findUser(store.users, post)}
+                        likes = {findLikes(store.likes, post, store.currentUserId)}
+                        post = {post}
+                        comments = {findComments(store.comments, post)}
+                    />
+                )
+            }
+        </div>
     );
 }
 
